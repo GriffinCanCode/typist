@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import Combine
 
 /// Manages global and local hotkey registration and handling
 class HotkeyManager: ObservableObject {

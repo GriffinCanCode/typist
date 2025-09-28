@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import AVFoundation
 
 /// Global constants used throughout the Typist application
 enum Constants {

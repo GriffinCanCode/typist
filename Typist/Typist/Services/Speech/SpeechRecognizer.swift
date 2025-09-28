@@ -2,6 +2,7 @@ import SwiftUI
 import AVFoundation
 import Speech
 import Foundation
+import Combine
 
 /// Handles speech recognition using both Apple Speech Framework and WhisperX
 class SpeechRecognizer: ObservableObject {
@@ -38,6 +39,7 @@ class SpeechRecognizer: ObservableObject {
     private func requestPermissions() async {
         // Request microphone permission
         await withCheckedContinuation { continuation in
+            #if os(iOS)
             AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted in
                 Task { @MainActor in
                     self?.isAuthorized = granted
@@ -45,6 +47,14 @@ class SpeechRecognizer: ObservableObject {
                     continuation.resume()
                 }
             }
+            #else
+            // On macOS, microphone permission is handled by the system automatically
+            Task { @MainActor in
+                self.isAuthorized = true
+                print("Microphone permission: granted (macOS)")
+                continuation.resume()
+            }
+            #endif
         }
         
         // Request speech recognition permission
@@ -67,6 +77,7 @@ class SpeechRecognizer: ObservableObject {
     }
     
     private func setupAudioSession() {
+        #if os(iOS)
         do {
             let audioSession = AVAudioSession.sharedInstance()
             try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
@@ -75,6 +86,10 @@ class SpeechRecognizer: ObservableObject {
             print("Failed to setup audio session: \(error)")
             self.error = .audioSessionError(error)
         }
+        #else
+        // On macOS, audio session setup is not needed
+        print("Audio session setup not required on macOS")
+        #endif
     }
     
     // MARK: - Recording Control

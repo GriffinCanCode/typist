@@ -13,6 +13,32 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		173FCE4C2E88F11D008DCAC1 /* typist */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFolders = (
+				"Services/Python/venv/lib/python3.12/site-packages/av",
+				"Services/Python/venv/lib/python3.12/site-packages/certifi",
+				"Services/Python/venv/lib/python3.12/site-packages/certifi-2025.8.3.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/charset_normalizer",
+				"Services/Python/venv/lib/python3.12/site-packages/charset_normalizer-3.4.3.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/click",
+				"Services/Python/venv/lib/python3.12/site-packages/click-8.3.0.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/colorlog",
+				"Services/Python/venv/lib/python3.12/site-packages/colorlog-6.9.0.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/cycler",
+				"Services/Python/venv/lib/python3.12/site-packages/cycler-0.12.1.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/decorator-5.2.1.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/einops",
+				"Services/Python/venv/lib/python3.12/site-packages/einops-0.8.1.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/filelock",
+				"Services/Python/venv/lib/python3.12/site-packages/filelock-3.19.1.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/mdurl",
+				"Services/Python/venv/lib/python3.12/site-packages/mdurl-0.1.2.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/msgpack",
+				"Services/Python/venv/lib/python3.12/site-packages/msgpack-1.1.1.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/multidict",
+				"Services/Python/venv/lib/python3.12/site-packages/multidict-6.6.4.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/nltk-3.9.1.dist-info",
+				"Services/Python/venv/lib/python3.12/site-packages/numba",
+			);
 			path = typist;
 			sourceTree = "<group>";
 		};

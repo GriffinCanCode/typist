@@ -75,6 +75,33 @@ Typist/
    - Grant microphone and speech recognition permissions when prompted
    - Build and run the project
 
+### Automated Setup (Alternative)
+
+If you encounter issues with the Xcode project or want automated setup:
+
+**Option 1: Python Script (Recommended)**
+```bash
+./setup_project.py
+```
+
+**Option 2: Bash Script**
+```bash
+./setup_xcode_project.sh
+```
+
+These scripts will:
+- ✅ Detect if a valid Xcode project exists
+- ✅ Automatically create one if missing/corrupted
+- ✅ Organize your Swift files properly
+- ✅ Set up basic project configuration
+- ✅ Test the build process
+
+**Manual Build (Command Line)**
+```bash
+# After running setup script
+xcodebuild -project typist.xcodeproj -scheme typist build
+```
+
 ### Initial Configuration
 
 1. **Grant Permissions**: The app will request microphone and speech recognition access

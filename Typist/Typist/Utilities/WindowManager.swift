@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import Combine
 
 /// Manages floating window behavior and positioning
 class WindowManager: ObservableObject {
