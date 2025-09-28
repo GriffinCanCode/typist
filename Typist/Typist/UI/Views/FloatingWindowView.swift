@@ -3,10 +3,8 @@ import AppKit
 
 struct FloatingWindowView: View {
     @EnvironmentObject var speechRecognizer: SpeechRecognizer
-    @State private var isRecording = false
-    @State private var recordingAnimation = false
     @State private var transcribedText = ""
-    @State private var showingText = false
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         HStack(spacing: 12) {
@@ -16,9 +14,11 @@ struct FloatingWindowView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
-        .background(GlassmorphismBackground())
-        .cornerRadius(25)
-        .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+        .background(
+            RoundedRectangle(cornerRadius: 25)
+                .fill(.regularMaterial)
+                .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+        )
         .onReceive(speechRecognizer.$recognizedText) { text in
             handleRecognizedText(text)
         }
@@ -31,40 +31,30 @@ struct FloatingWindowView: View {
     
     private var microphoneButton: some View {
         Button(action: toggleRecording) {
-            Image(systemName: isRecording ? "mic.fill" : "mic")
+            Image(systemName: speechRecognizer.isRecording ? "mic.fill" : "mic")
                 .font(.system(size: 20, weight: .medium))
-                .foregroundColor(isRecording ? .red : .primary)
-                .scaleEffect(recordingAnimation ? 1.2 : 1.0)
-                .animation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true),
-                          value: recordingAnimation)
+                .foregroundColor(speechRecognizer.isRecording ? .red : .primary)
         }
-        .buttonStyle(GlassButtonStyle())
-        .accessibilityLabel(isRecording ? "Stop recording" : "Start recording")
+        .buttonStyle(NonFocusStealingButtonStyle())
+        .disabled(speechRecognizer.isProcessing)
+        .accessibilityLabel(speechRecognizer.isRecording ? "Stop recording" : "Start recording")
     }
     
     @ViewBuilder
     private var statusIndicator: some View {
-        if isRecording {
+        if speechRecognizer.isRecording {
+            Text("Listening...")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        } else if speechRecognizer.isProcessing {
             HStack(spacing: 4) {
-                Text("Listening...")
+                Text("Processing...")
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
-                // Animated dots
-                HStack(spacing: 2) {
-                    ForEach(0..<3, id: \.self) { index in
-                        Circle()
-                            .frame(width: 4, height: 4)
-                            .foregroundColor(.secondary)
-                            .scaleEffect(recordingAnimation ? 1.0 : 0.5)
-                            .animation(.easeInOut(duration: 0.4)
-                                .repeatForever(autoreverses: true)
-                                .delay(Double(index) * 0.2),
-                                      value: recordingAnimation)
-                    }
-                }
+                ProgressView()
+                    .scaleEffect(0.6)
             }
-            .transition(.opacity.combined(with: .scale))
         }
     }
     
@@ -74,49 +64,84 @@ struct FloatingWindowView: View {
                 .font(.system(size: 12, weight: .medium))
                 .foregroundColor(.secondary)
         }
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(NonFocusStealingButtonStyle())
         .accessibilityLabel("Close window")
     }
     
     // MARK: - Actions
     
     private func toggleRecording() {
-        if isRecording {
+        // Prevent multiple rapid taps
+        guard !speechRecognizer.isProcessing else { 
+            print("🔥 Ignoring tap - already processing")
+            return 
+        }
+        
+        print("🔥 Toggle recording - currently recording: \(speechRecognizer.isRecording)")
+        
+        if speechRecognizer.isRecording {
             speechRecognizer.stopRecording()
-            isRecording = false
-            recordingAnimation = false
         } else {
             speechRecognizer.startRecording()
-            isRecording = true
-            recordingAnimation = true
         }
     }
     
     private func closeWindow() {
-        if isRecording {
+        print("🔥 FloatingWindowView: Close button tapped")
+        
+        // Stop recording immediately
+        if speechRecognizer.isRecording {
+            print("🔥 Stopping recording before close")
             speechRecognizer.stopRecording()
         }
         
-        WindowManager.shared.hideFloatingWindow()
+        // Close window immediately
+        print("🔥 Dismissing window")
+        dismiss()
     }
     
     private func setupWindowProperties() {
-        DispatchQueue.main.async {
+        print("🔥 FloatingWindowView.setupWindowProperties() called")
+        
+        // Delay slightly to ensure window is fully loaded
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            print("🔥 Setting up window properties")
             WindowManager.shared.setupFloatingWindowProperties()
         }
     }
     
     private func handleRecognizedText(_ text: String) {
-        guard !text.isEmpty else { return }
-        
-        transcribedText = text
-        showingText = true
-        ClipboardManager.shared.insertTextIntoActiveField(text)
-        
-        // Auto-close after successful transcription
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            closeWindow()
+        guard !text.isEmpty else { 
+            print("🔥 FloatingWindowView: Received empty text, ignoring")
+            return 
         }
+        
+        print("🔥 FloatingWindowView: Received text: '\(text)'")
+        transcribedText = text
+        
+        // Shorter delay since we're not stealing focus anymore
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            print("🔥 FloatingWindowView: Inserting text: '\(text)'")
+            ClipboardManager.shared.insertTextIntoActiveField(text)
+            
+            // Auto-close after successful transcription with shorter delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                print("🔥 FloatingWindowView: Auto-closing after successful transcription")
+                self.dismiss()
+            }
+        }
+    }
+}
+
+// MARK: - Custom Button Style
+
+struct NonFocusStealingButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .opacity(configuration.isPressed ? 0.7 : 1.0)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+            .contentShape(Rectangle()) // Ensures the entire button area is tappable
     }
 }
 

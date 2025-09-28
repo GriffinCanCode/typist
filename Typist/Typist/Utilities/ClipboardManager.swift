@@ -3,8 +3,8 @@ import AppKit
 import CoreGraphics
 
 /// Manages clipboard operations and text insertion into the active application
-class ClipboardManager {
-    static let shared = ClipboardManager()
+public class ClipboardManager {
+    public static let shared = ClipboardManager()
     
     private init() {}
     
@@ -12,7 +12,7 @@ class ClipboardManager {
     
     /// Insert text into the currently active text field using clipboard and paste simulation
     /// - Parameter text: The text to insert
-    func insertTextIntoActiveField(_ text: String) {
+    public func insertTextIntoActiveField(_ text: String) {
         guard !text.isEmpty else {
             print("Warning: Attempted to insert empty text")
             return
@@ -24,12 +24,12 @@ class ClipboardManager {
         // Set new text to clipboard
         setClipboardContent(text)
         
-        // Wait a brief moment for clipboard to update
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        // Wait a moment for clipboard to update reliably  
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             self.simulatePasteCommand()
             
             // Restore original clipboard content after a delay
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                 if let originalContent = originalClipboard {
                     self.setClipboardContent(originalContent)
                 }

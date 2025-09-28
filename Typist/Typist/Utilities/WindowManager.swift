@@ -3,8 +3,8 @@ import AppKit
 import Combine
 
 /// Manages floating window behavior and positioning
-class WindowManager: ObservableObject {
-    static let shared = WindowManager()
+public class WindowManager: ObservableObject {
+    public static let shared = WindowManager()
     
     private init() {}
     
@@ -12,12 +12,19 @@ class WindowManager: ObservableObject {
     
     /// Toggle the floating window visibility
     func toggleFloatingWindow() {
+        print("🔥 WindowManager.toggleFloatingWindow() called")
         if let window = getFloatingWindow() {
+            print("🔥 Found floating window, isVisible: \(window.isVisible)")
             if window.isVisible {
+                print("🔥 Window is visible, hiding it")
                 hideFloatingWindow()
             } else {
+                print("🔥 Window is not visible, showing it")
                 showFloatingWindow()
             }
+        } else {
+            print("🔥 ERROR: Could not find floating window!")
+            print("🔥 Available windows: \(NSApp.windows.map { $0.identifier?.rawValue ?? "nil" })")
         }
     }
     
@@ -29,7 +36,8 @@ class WindowManager: ObservableObject {
         }
         
         positionWindowNearMouse(window)
-        window.makeKeyAndOrderFront(nil)
+        // Don't steal focus - just order front without making key
+        window.orderFront(nil)
         window.level = .floating
     }
     
@@ -40,8 +48,14 @@ class WindowManager: ObservableObject {
     }
     
     /// Setup properties for the floating window to achieve glassmorphism effect
-    func setupFloatingWindowProperties() {
-        guard let window = getFloatingWindow() else { return }
+    public func setupFloatingWindowProperties() {
+        // Find the most recently created window (which should be our floating window)
+        guard let window = NSApp.windows.last else {
+            print("🔥 WindowManager: No windows found for setup")
+            return
+        }
+        
+        print("🔥 WindowManager: Setting up window properties for: \(window.identifier?.rawValue ?? "nil")")
         
         window.isOpaque = false
         window.backgroundColor = .clear
@@ -51,6 +65,16 @@ class WindowManager: ObservableObject {
         
         // Add subtle window shadow
         window.hasShadow = true
+        
+        // Prevent window from becoming key to avoid stealing focus
+        window.styleMask.remove(.resizable)
+        window.styleMask.remove(.miniaturizable)
+        
+        // Set window level to stay above but not steal focus
+        window.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.floatingWindow)))
+        
+        // Position the window near the mouse cursor
+        positionWindowNearMouse(window)
     }
     
     // MARK: - Window Positioning

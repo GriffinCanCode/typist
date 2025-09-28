@@ -13,32 +13,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		173FCE4C2E88F11D008DCAC1 /* typist */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFolders = (
-				"Services/Python/venv/lib/python3.12/site-packages/av",
-				"Services/Python/venv/lib/python3.12/site-packages/certifi",
-				"Services/Python/venv/lib/python3.12/site-packages/certifi-2025.8.3.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/charset_normalizer",
-				"Services/Python/venv/lib/python3.12/site-packages/charset_normalizer-3.4.3.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/click",
-				"Services/Python/venv/lib/python3.12/site-packages/click-8.3.0.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/colorlog",
-				"Services/Python/venv/lib/python3.12/site-packages/colorlog-6.9.0.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/cycler",
-				"Services/Python/venv/lib/python3.12/site-packages/cycler-0.12.1.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/decorator-5.2.1.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/einops",
-				"Services/Python/venv/lib/python3.12/site-packages/einops-0.8.1.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/filelock",
-				"Services/Python/venv/lib/python3.12/site-packages/filelock-3.19.1.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/mdurl",
-				"Services/Python/venv/lib/python3.12/site-packages/mdurl-0.1.2.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/msgpack",
-				"Services/Python/venv/lib/python3.12/site-packages/msgpack-1.1.1.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/multidict",
-				"Services/Python/venv/lib/python3.12/site-packages/multidict-6.6.4.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/nltk-3.9.1.dist-info",
-				"Services/Python/venv/lib/python3.12/site-packages/numba",
-			);
 			path = typist;
 			sourceTree = "<group>";
 		};
@@ -272,6 +246,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = typist.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9F9M9G7Q6R;
@@ -280,6 +255,9 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAccessibilityUsageDescription = "Typist needs accessibility permissions to register global hotkeys that work system-wide, allowing you to activate voice transcription from any application.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Typist needs microphone access to transcribe your speech to text.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Typist uses speech recognition to convert your voice to text for input into any text field.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -295,24 +273,6 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/_soundfile_data",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/av/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/ctranslate2/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/google/_upb",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/hf_xet",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/llvmlite/binding",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/numpy/_core/lib",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/numpy/random/lib",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/onnxruntime/capi",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/PIL/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/safetensors",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/scipy/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/sklearn/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/tokenizers",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/torch/lib",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/torchaudio/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/torchaudio/lib",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/torio/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;
@@ -337,6 +297,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = typist.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 9F9M9G7Q6R;
@@ -345,6 +306,9 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSAccessibilityUsageDescription = "Typist needs accessibility permissions to register global hotkeys that work system-wide, allowing you to activate voice transcription from any application.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Typist needs microphone access to transcribe your speech to text.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Typist uses speech recognition to convert your voice to text for input into any text field.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -360,24 +324,6 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/_soundfile_data",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/av/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/ctranslate2/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/google/_upb",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/hf_xet",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/llvmlite/binding",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/numpy/_core/lib",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/numpy/random/lib",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/onnxruntime/capi",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/PIL/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/safetensors",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/scipy/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/sklearn/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/tokenizers",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/torch/lib",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/torchaudio/.dylibs",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/torchaudio/lib",
-					"$(PROJECT_DIR)/typist/Services/Python/venv/lib/python3.12/site-packages/torio/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
 				MARKETING_VERSION = 1.0;

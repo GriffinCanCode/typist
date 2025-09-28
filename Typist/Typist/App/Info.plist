@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Typist</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.typist.app</string>
+	<string>com.griffincancode.typist</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -30,6 +30,8 @@
 	<string>Typist needs microphone access to transcribe your speech to text.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Typist uses speech recognition to convert your voice to text for input into any text field.</string>
+	<key>NSAccessibilityUsageDescription</key>
+	<string>Typist needs accessibility permissions to register global hotkeys that work system-wide, allowing you to activate voice transcription from any application.</string>
 	<key>LSUIElement</key>
 	<false/>
 </dict>

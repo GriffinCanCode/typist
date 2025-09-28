@@ -5,7 +5,7 @@ import Foundation
 import Combine
 
 /// Handles speech recognition using both Apple Speech Framework and WhisperX
-class SpeechRecognizer: ObservableObject {
+public class SpeechRecognizer: ObservableObject {
     @Published var recognizedText = ""
     @Published var isRecording = false
     @Published var isAuthorized = false
@@ -22,14 +22,20 @@ class SpeechRecognizer: ObservableObject {
     private var audioFile: AVAudioFile?
     private var temporaryAudioURL: URL?
     
-    // WhisperX integration
-    private let whisperXService = WhisperXService()
+    // Timeout management
+    private var recordingTimer: Timer?
+    private let maxRecordingDuration: TimeInterval = 30.0 // 30 seconds max
+    private let noSpeechTimeout: TimeInterval = 8.0 // 8 seconds of no speech before stopping
+    private var lastSpeechTime: Date = Date()
     
-    init() {
+    // WhisperX integration (disabled for now)
+    // private let whisperXService = WhisperXService()
+    
+    public init() {
         Task {
             await requestPermissions()
             setupAudioSession()
-            checkWhisperXSetup()
+            // checkWhisperXSetup()
         }
     }
     
@@ -94,7 +100,7 @@ class SpeechRecognizer: ObservableObject {
     
     // MARK: - Recording Control
     
-    func startRecording() {
+    public func startRecording() {
         guard isAuthorized else {
             print("Speech recognition not authorized")
             error = .authorizationFailed
@@ -107,10 +113,12 @@ class SpeechRecognizer: ObservableObject {
         // Clear previous results
         recognizedText = ""
         error = nil
+        lastSpeechTime = Date()
         
         do {
             try startAppleSpeechRecognition()
             isRecording = true
+            startRecordingTimer()
             print("Recording started")
         } catch {
             print("Failed to start recording: \(error)")
@@ -118,7 +126,7 @@ class SpeechRecognizer: ObservableObject {
         }
     }
     
-    func stopRecording() {
+    public func stopRecording() {
         audioEngine.stop()
         audioEngine.inputNode.removeTap(onBus: 0)
         
@@ -126,6 +134,10 @@ class SpeechRecognizer: ObservableObject {
         recognitionRequest = nil
         recognitionTask?.cancel()
         recognitionTask = nil
+        
+        // Clean up timer
+        recordingTimer?.invalidate()
+        recordingTimer = nil
         
         isRecording = false
         print("Recording stopped")
@@ -147,6 +159,9 @@ class SpeechRecognizer: ObservableObject {
         if #available(iOS 13, macOS 10.15, *) {
             recognitionRequest.requiresOnDeviceRecognition = false
         }
+        
+        // Add timeout to prevent premature stopping
+        recognitionRequest.taskHint = .dictation
         
         let inputNode = audioEngine.inputNode
         
@@ -170,23 +185,76 @@ class SpeechRecognizer: ObservableObject {
     
     private func handleRecognitionResult(result: SFSpeechRecognitionResult?, error: Error?) {
         if let result = result {
-            recognizedText = result.bestTranscription.formattedString
+            let newText = result.bestTranscription.formattedString
+            recognizedText = newText
             
-            // If the result is final, stop recording
-            if result.isFinal {
+            // Update last speech time if we have meaningful text
+            if !newText.trimmingCharacters(in: .whitespaces).isEmpty {
+                lastSpeechTime = Date()
+            }
+            
+            // If the result is final and we have meaningful text, stop recording
+            if result.isFinal && !newText.trimmingCharacters(in: .whitespaces).isEmpty {
+                print("Final recognition result: '\(newText)'")
                 stopRecording()
             }
         }
         
         if let error = error {
-            print("Recognition error: \(error.localizedDescription)")
+            let errorDescription = error.localizedDescription
+            print("Recognition error: \(errorDescription)")
+            
+            // Ignore "no speech detected" errors - let the timer handle timeouts instead
+            if errorDescription.contains("No speech detected") {
+                print("Ignoring 'no speech detected' - continuing to listen")
+                return // Don't stop recording, just continue listening
+            }
+            
+            // Only treat certain errors as critical
             self.error = .recognitionError(error)
+            stopRecording()
+        }
+    }
+    
+    // MARK: - Timer Management
+    
+    private func startRecordingTimer() {
+        recordingTimer?.invalidate() // Clear any existing timer
+        
+        recordingTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                self?.checkRecordingTimeout()
+            }
+        }
+    }
+    
+    private func checkRecordingTimeout() {
+        guard isRecording else {
+            recordingTimer?.invalidate()
+            recordingTimer = nil
+            return
+        }
+        
+        let now = Date()
+        let timeSinceStart = now.timeIntervalSince(lastSpeechTime)
+        
+        // Stop if we've been recording for too long overall
+        if timeSinceStart > maxRecordingDuration {
+            print("Recording timeout: Maximum duration reached (\(maxRecordingDuration)s)")
+            stopRecording()
+            return
+        }
+        
+        // Stop if no speech detected for too long (but only if we haven't detected any speech at all)
+        if recognizedText.trimmingCharacters(in: .whitespaces).isEmpty && timeSinceStart > noSpeechTimeout {
+            print("Recording timeout: No speech detected for \(noSpeechTimeout)s")
             stopRecording()
         }
     }
     
     // MARK: - WhisperX Integration
     
+    /*
     private func checkWhisperXSetup() {
         whisperXService.checkAvailability { available in
             if available {
@@ -196,7 +264,9 @@ class SpeechRecognizer: ObservableObject {
             }
         }
     }
+    */
     
+    /*
     /// Use WhisperX for transcription (alternative to Apple's service)
     func transcribeWithWhisperX(audioURL: URL) async {
         isProcessing = true
@@ -215,6 +285,7 @@ class SpeechRecognizer: ObservableObject {
             }
         }
     }
+    */
 }
 
 // MARK: - Error Types

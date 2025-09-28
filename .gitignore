@@ -9,6 +9,8 @@ xcuserdata/
 *.xcscmblueprint
 *.xccheckout
 
+python-venv/
+
 ## Xcode 4 integration
 *.xcintegration
 
