@@ -1,0 +1,29 @@
+# Core WhisperX and speech recognition dependencies
+whisperx
+torch
+torchaudio
+
+# Transformers for model loading and processing
+transformers
+
+# Audio processing libraries
+librosa
+soundfile
+
+# Additional audio format support  
+pydub
+
+# Performance and utility libraries
+numpy
+scipy
+
+# Optional: GPU acceleration (uncomment if using NVIDIA GPU)
+# torch-audio-spectrograms>=0.1.0
+
+# Optional: Apple Silicon optimization (uncomment for M1/M2 Macs)
+# torch-directml>=0.1.13.1.dev230426  # For DirectML support
+
+# Development and debugging tools (optional)
+# pytest>=7.0.0
+# black>=22.0.0
+# flake8>=4.0.0
